@@ -1,0 +1,51 @@
+modLoader="javafml"
+loaderVersion="[40,)"
+license="MIT"
+issueTrackerURL="https://github.com/SilentChaos512/SilentGemsExtra/issues"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/silents-gems-extra"
+#logoFile="examplemod.png" #optional
+credits=""
+authors="SilentChaos512"
+
+[[mods]]
+    modId="silentgems_extra"
+    version="${file.jarVersion}"
+    displayName="Silent's Gems: Extra"
+    #updateJSONURL="https://raw.githubusercontent.com/SilentChaos512/SilentGemsExtra/1.18.x/update.json"
+    description='''
+    Downloads: https://www.curseforge.com/minecraft/mc-mods/silents-gems-extra (I do not upload anywhere else)
+    Changelog: https://github.com/SilentChaos512/SilentGemsExtra/blob/1.18.x/CHANGELOG.md
+    Source: https://github.com/SilentChaos512/SilentGemsExtra/
+    Issues: https://github.com/SilentChaos512/SilentGemsExtra/issues
+    '''
+
+[[dependencies.silentgems_extra]]
+    modId="forge"
+    mandatory=true
+    versionRange="[40,)"
+    ordering="AFTER"
+    side="BOTH"
+[[dependencies.silentgems_extra]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.18.2,1.19)"
+    ordering="AFTER"
+    side="BOTH"
+[[dependencies.silentgems_extra]]
+    modId="silentlib"
+    mandatory=true
+    versionRange="[6.2,7)"
+    ordering = "AFTER"
+    side = "BOTH"
+[[dependencies.silentgems_extra]]
+    modId="silentgems"
+    mandatory=true
+    versionRange="[4.3,)"
+    ordering="AFTER"
+    side="BOTH"
+[[dependencies.silentgems_extra]]
+    modId="silentgear"
+    mandatory=false
+    versionRange="[2.10,)"
+    ordering="AFTER"
+    side="BOTH"
