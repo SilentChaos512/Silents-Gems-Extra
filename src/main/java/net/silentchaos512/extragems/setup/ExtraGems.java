@@ -11,14 +11,12 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.FlowerPotBlock;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -30,13 +28,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.util.Lazy;
 import net.silentchaos512.extragems.ExtraGemsMod;
 import net.silentchaos512.gems.GemsBase;
-import net.silentchaos512.gems.block.*;
-import net.silentchaos512.gems.config.GemsConfig;
 import net.silentchaos512.gems.config.OreConfig;
-import net.silentchaos512.gems.item.GemBlockItem;
-import net.silentchaos512.gems.item.GemItem;
-import net.silentchaos512.gems.setup.Registration;
-import net.silentchaos512.gems.util.Gems;
 import net.silentchaos512.gems.world.GemsWorldFeatures;
 import net.silentchaos512.lib.registry.BlockRegistryObject;
 import net.silentchaos512.lib.registry.ItemRegistryObject;
@@ -245,14 +237,14 @@ public enum ExtraGems {
     private final Map<ResourceKey<Level>, Lazy<Holder<PlacedFeature>>> orePlacedFeatures = new HashMap<>();
 
     // Blocks
-    BlockRegistryObject<GemOreBlock> ore;
-    BlockRegistryObject<GemOreBlock> deepslateOre;
-    BlockRegistryObject<GemOreBlock> netherOre;
-    BlockRegistryObject<GemOreBlock> endOre;
-    BlockRegistryObject<GemBlock> block;
+    BlockRegistryObject<Block> ore;
+    BlockRegistryObject<Block> deepslateOre;
+    BlockRegistryObject<Block> netherOre;
+    BlockRegistryObject<Block> endOre;
+    BlockRegistryObject<Block> block;
 
     // Items
-    ItemRegistryObject<GemItem> item;
+    ItemRegistryObject<Item> item;
 
     // Tags
     final TagKey<Block> blockTag;
@@ -387,27 +379,27 @@ public enum ExtraGems {
 
     //region Block, Item, and Tag getters
 
-    public GemOreBlock getOre() {
+    public Block getOre() {
         return ore.get();
     }
 
-    public GemOreBlock getDeepslateOre() {
+    public Block getDeepslateOre() {
         return deepslateOre.get();
     }
 
-    public GemOreBlock getNetherOre() {
+    public Block getNetherOre() {
         return netherOre.get();
     }
 
-    public GemOreBlock getEndOre() {
+    public Block getEndOre() {
         return endOre.get();
     }
 
-    public GemBlock getBlock() {
+    public Block getBlock() {
         return block.get();
     }
 
-    public GemItem getItem() {
+    public Item getItem() {
         return item.get();
     }
 
@@ -444,39 +436,42 @@ public enum ExtraGems {
     public static void registerBlocks() {
         for (ExtraGems gem : values())
             gem.ore = registerBlock(gem.getName() + "_ore", () ->
-                    new GemOreBlock(gem, 2, "gem_ore", BlockBehaviour.Properties.of(Material.STONE)
+                    new OreBlock(BlockBehaviour.Properties.of(Material.STONE)
                             .strength(3f)
                             .requiresCorrectToolForDrops()
-                            .sound(SoundType.STONE)));
+                            .sound(SoundType.STONE),
+                            UniformInt.of(1, 5)));
 
         for (ExtraGems gem : values())
             gem.deepslateOre = registerBlock("deepslate_" + gem.getName() + "_ore", () ->
-                    new GemOreBlock(gem, 2, "deepslate_gem_ore", BlockBehaviour.Properties.copy(gem.ore.get())
+                    new OreBlock(BlockBehaviour.Properties.copy(gem.ore.get())
                             .strength(4.5f, 3f)
-                            .sound(SoundType.DEEPSLATE)));
+                            .sound(SoundType.DEEPSLATE),
+                            UniformInt.of(1, 5)));
 
         for (ExtraGems gem : values())
             gem.netherOre = registerBlock(gem.getName() + "_nether_ore", () ->
-                    new GemOreBlock(gem, 3, "gem_nether_ore", BlockBehaviour.Properties.copy(gem.ore.get())
+                    new OreBlock(BlockBehaviour.Properties.copy(gem.ore.get())
                             .strength(4f)
-                            .sound(SoundType.NETHER_ORE)));
+                            .sound(SoundType.NETHER_ORE),
+                            UniformInt.of(1, 5)));
 
         for (ExtraGems gem : values())
             gem.endOre = registerBlock(gem.getName() + "_end_ore", () ->
-                    new GemOreBlock(gem, 4, "gem_end_ore", BlockBehaviour.Properties.copy(gem.ore.get())
-                            .strength(6f)));
+                    new OreBlock(BlockBehaviour.Properties.copy(gem.ore.get())
+                            .strength(6f),
+                            UniformInt.of(1, 5)));
 
         for (ExtraGems gem : values())
             gem.block = registerBlock(gem.getName() + "_block", () ->
-                    new GemBlock(gem, "gem_block", BlockBehaviour.Properties.of(Material.METAL)
+                    new Block(BlockBehaviour.Properties.of(Material.METAL)
                             .strength(4, 30)
                             .sound(SoundType.METAL)));
     }
 
     public static void registerItems() {
         for (ExtraGems gem : values())
-            gem.item = registerItem(gem.getName(), () ->
-                    new GemItem(gem, "gem", new Item.Properties().tab(GemsBase.ITEM_GROUP)));
+            gem.item = registerItem(gem.getName(), () -> new Item(new Item.Properties().tab(GemsBase.ITEM_GROUP)));
     }
 
     private static <T extends Block> BlockRegistryObject<T> registerBlockNoItem(String name, Supplier<T> block) {
@@ -500,6 +495,6 @@ public enum ExtraGems {
     }
 
     private static Supplier<BlockItem> defaultBlockItem(BlockRegistryObject<?> block) {
-        return () -> new GemBlockItem(block.get(), new Item.Properties().tab(GemsBase.ITEM_GROUP));
+        return () -> new BlockItem(block.get(), new Item.Properties().tab(GemsBase.ITEM_GROUP));
     }
 }

@@ -1,6 +1,7 @@
 package net.silentchaos512.extragems.setup;
 
 import net.minecraft.world.item.Item;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.silentchaos512.extragems.ExtraGemsMod;
@@ -10,5 +11,9 @@ public class ExtraItems {
 
     static {
         ExtraGems.registerItems();
+    }
+
+    public static void init(IEventBus eventBus) {
+        ITEMS.register(eventBus);
     }
 }
